@@ -28,8 +28,6 @@ sudo -E usermod -aG docker $USER
 # Install Docker Compose into your user's home directory.
 pip3 install --user docker-compose
 
-# Let sudo use docker-compose too
-sudo ln -s /home/ubuntu/.local/bin/docker-compose /usr/bin/docker-compose
 
 # Tell Docker client where Docker Desktop is listening.
 echo "export DOCKER_HOST=tcp://localhost:2375" >> ~/.bashrc && source ~/.bashrc
@@ -42,5 +40,5 @@ echo '[[ "$(umask)" == '\''0000'\'' ]] && umask 0022' >> ~/.bashrc
 
 # SSH directory 
 mkdir -p ~/.ssh/
-chmod 700 .ssh
+chmod 700 ~/.ssh
 

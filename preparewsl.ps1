@@ -41,17 +41,21 @@ Write-Host "Set /c/ as mount point"
 Start-Process "ubuntu1804.exe" -ArgumentList "run echo '[automount]' > /etc/wsl.conf" -Wait -NoNewWindow
 Start-Process "ubuntu1804.exe" -ArgumentList "run echo 'root = /' >> /etc/wsl.conf" -Wait -NoNewWindow
 Start-Process "ubuntu1804.exe" -ArgumentList "run echo 'options = \""metadata,umask=22,fmask=11,uid=1000,gid=1000\""' >> /etc/wsl.conf " -Wait -NoNewWindow
+Restart-Service LxssManager
+Start-Sleep -s 5
 
-Write-Host "Create the ubuntu user " -ForegroundColor Yellow -BackgroundColor DarkGreen
-Start-Process "ubuntu1804.exe" -ArgumentList 'run adduser ubuntu --gecos "First,Last,RoomNumber,WorkPhone,HomePhone" --disabled-password' -Wait -NoNewWindow
-Write-Host "Add ubuntu to sudo group" -ForegroundColor Yellow -BackgroundColor DarkGreen
-Start-Process "ubuntu1804.exe" -ArgumentList "run usermod -aG sudo ubuntu" -Wait -NoNewWindow
-Write-Host "Allow ubuntu to run apt updates" -ForegroundColor Yellow -BackgroundColor DarkGreen
-Start-Process "ubuntu1804.exe" -ArgumentList "run echo 'ubuntu ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers" -Wait -NoNewWindow
-Write-Host "Set ubuntu password to ubuntu" -ForegroundColor Yellow -BackgroundColor DarkGreen
-Start-Process "ubuntu1804.exe" -ArgumentList "run echo 'ubuntu:ubuntu' | sudo chpasswd" -Wait -NoNewWindow
-Write-Host "Set WSL default user to ubuntu" -ForegroundColor Yellow -BackgroundColor DarkGreen
-Start-Process "ubuntu1804.exe" -ArgumentList "config --default-user ubuntu" -Wait -NoNewWindow
+$username = Read-Host -Prompt 'The WSL user name you want'
+
+Write-Host "Create the $username user " -ForegroundColor Yellow -BackgroundColor DarkGreen
+Start-Process "ubuntu1804.exe" -ArgumentList "run adduser $username --gecos 'First,Last,RoomNumber,WorkPhone,HomePhone' --disabled-password" -Wait -NoNewWindow
+Write-Host "Add $username to sudo group" -ForegroundColor Yellow -BackgroundColor DarkGreen
+Start-Process "ubuntu1804.exe" -ArgumentList "run usermod -aG sudo $username" -Wait -NoNewWindow
+Write-Host "Allow $username to run apt updates" -ForegroundColor Yellow -BackgroundColor DarkGreen
+Start-Process "ubuntu1804.exe" -ArgumentList "run echo '$username ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers" -Wait -NoNewWindow
+Write-Host "Ask for $username password to set" -ForegroundColor Yellow -BackgroundColor DarkGreen
+Start-Process "ubuntu1804.exe" -ArgumentList "run passwd $username" -Wait -NoNewWindow
+Write-Host "Set WSL default user to $username" -ForegroundColor Yellow -BackgroundColor DarkGreen
+Start-Process "ubuntu1804.exe" -ArgumentList "config --default-user $username" -Wait -NoNewWindow
 Write-Host "Configure Ubuntu, install docker, set environment..." -ForegroundColor Yellow -BackgroundColor DarkGreen
 Start-Process "WSL" -ArgumentList "bash preparewsl.sh" -Wait -NoNewWindow
 
