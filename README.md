@@ -1,4 +1,5 @@
 
+See [the accompanying post](https://code.mendhak.com/my-wsl-dev-setup/)  
 
 To run it, 
 
