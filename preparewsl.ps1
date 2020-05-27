@@ -59,4 +59,32 @@ Start-Process "ubuntu1804.exe" -ArgumentList "config --default-user $username" -
 Write-Host "Configure Ubuntu, install docker, set environment..." -ForegroundColor Yellow -BackgroundColor DarkGreen
 Start-Process "WSL" -ArgumentList "bash preparewsl.sh" -Wait -NoNewWindow
 
+
+Write-Host "Installing Docker Desktop" -ForegroundColor Yellow -BackgroundColor DarkGreen
+
+if(!(Test-Path "C:\Temp\docker-desktop-installer.exe"))
+{
+    Write-Host "Downloading the Docker Desktop installer." -ForegroundColor Yellow -BackgroundColor DarkGreen
+    Start-BitsTransfer -Source "https://download.docker.com/win/stable/Docker%20Desktop%20Installer.exe" -Destination "C:\Temp\docker-desktop-installer.exe" -Description "Downloading Docker Desktop"
+}
+
+Start-Process 'C:\Temp\docker-desktop-installer.exe' -ArgumentList 'install --quiet' -Wait -NoNewWindow
+
+Stop-Service *docker*
+
+Write-Host "Setting Docker to allow TCP port 2375" -ForegroundColor Yellow -BackgroundColor DarkGreen
+
+$dockerpath = "$env:APPDATA\Docker\settings.json"
+$settings = Get-Content $dockerpath | ConvertFrom-Json
+
+$settings.exposeDockerAPIOnTCP2375 = $true
+
+$settings | ConvertTo-Json | Set-Content $dockerpath
+
+Start-Service *docker*  
+
+Write-Host "Starting Docker Desktop" -ForegroundColor Yellow -BackgroundColor DarkGreen
+& 'C:\Program Files\Docker\Docker\Docker Desktop.exe'
+
+
 Write-Host "Done." -ForegroundColor Yellow -BackgroundColor DarkGreen
