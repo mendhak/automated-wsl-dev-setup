@@ -16,7 +16,7 @@ Write-Host "WSL already enabled. Moving on." -ForegroundColor Yellow -Background
 if(!(Test-Path "C:\Temp\UBU1804.appx"))
 {
     Write-Host "Downloading the Ubuntu 18.04 image. Please wait." -ForegroundColor Yellow -BackgroundColor DarkGreen
-    Invoke-WebRequest -Uri "https://aka.ms/wsl-ubuntu-1804" -OutFile "C:\Temp\UBU1804.appx" -UseBasicParsing 
+    Start-BitsTransfer -Source "https://aka.ms/wsl-ubuntu-1804" -Destination "C:\Temp\UBU1804.appx" -Description "Downloading Ubuntu 18.04 WSL image"
 }
 else 
 {
